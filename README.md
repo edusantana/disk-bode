@@ -24,7 +24,7 @@ bodao = ProdutoTipo(nome="Bodão", valor=140, quantidade=20)
 
 db.session.add(bodinho)
 db.session.add(bodao)
-db.session.commit
+db.session.commit()
 # CTRL+D para sair
 ```
 
