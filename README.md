@@ -14,8 +14,13 @@ pip install flask flask-bootstrap flask-moment flask-wtf flask-sqlalchemy flask-
 
 Agora vamos adicionar valores ao banco de dados:
 
+Digita:
+
+       flask shell
+
+Depois, insere os seguintes valores:
+
 ```python
-flask shell
 from app import db
 db.create_all()
 
@@ -25,8 +30,10 @@ bodao = ProdutoTipo(nome="Bodão", valor=140, quantidade=20)
 db.session.add(bodinho)
 db.session.add(bodao)
 db.session.commit()
-# CTRL+D para sair
+
 ```
+
+Digita `exit` para sair ou pressiona `CTRL+D`
 
 E executar a aplicação
 
