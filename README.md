@@ -12,9 +12,13 @@ source venv/bin/activate
 pip install flask flask-bootstrap flask-moment flask-wtf flask-sqlalchemy flask-migrate
 ```
 
-Agora vamos adicionar valores ao banco de dados:
+Configurar execução do flask:
 
-Digita:
+       export FLASK_APP=app.py
+       export FLASK_DEBUG=1
+
+
+Agora vamos adicionar valores ao banco de dados:
 
        flask shell
 
