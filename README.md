@@ -25,7 +25,8 @@ Agora vamos adicionar valores ao banco de dados:
 Depois, insere os seguintes valores:
 
 ```python
-from app import db
+from app import db, ProdutoTipo
+
 db.create_all()
 
 bodinho = ProdutoTipo(nome="Bodinho", valor=70, quantidade=10)
@@ -34,6 +35,10 @@ bodao = ProdutoTipo(nome="Bodão", valor=140, quantidade=20)
 db.session.add(bodinho)
 db.session.add(bodao)
 db.session.commit()
+
+# Consultando
+
+ProdutoTipo.query.all() 
 
 ```
 
