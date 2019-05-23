@@ -7,15 +7,18 @@ Aplicação do disk-bode
 ```
 git clone https://github.com/edusantana/disk-bode
 cd disk-bode
+# cria ambiente virtual do python
 python3 -m venv venv
+# ativa ambiente virtual do python
 source venv/bin/activate
+# instala essas bibliotecas no ambiente virtal ativado
 pip install flask flask-bootstrap flask-moment flask-wtf flask-sqlalchemy flask-migrate
 ```
 
 Configurar execução do flask:
 
-       export FLASK_APP=app.py
-       export FLASK_DEBUG=1
+    export FLASK_APP=app.py
+    export FLASK_DEBUG=1
 
 
 Agora vamos adicionar valores ao banco de dados:
