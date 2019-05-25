@@ -77,7 +77,7 @@ def vender():
         db.session.commit()
         return redirect(url_for('vender'))
 
-    produtos = ProdutoTipo.query.all()
+    produtos = ProdutoTipo.query.order_by(ProdutoTipo.nome).all()
     forms = {}
     for p in produtos:
         f = AjusteForm(produto=str(p.id), quantidade=0)
