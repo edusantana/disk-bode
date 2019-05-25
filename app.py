@@ -24,12 +24,6 @@ moment = Moment(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-
-class AjusteForm(FlaskForm):
-    quantidade = IntegerField('Quantidade', validators=[DataRequired()], widget=NumberInput(step=1))
-    produto = HiddenField('ProdutoTipo', validators=[DataRequired()])
-    submit = SubmitField('Ajustar')
-
 class ProdutoTipo(db.Model):
     __tablename__ = 'produto_tipos'
     id = db.Column(db.Integer, primary_key=True)
@@ -37,21 +31,22 @@ class ProdutoTipo(db.Model):
     valor = db.Column(db.Float)
     quantidade = db.Column(db.Integer, default=0)
     def __repr__(self):
-        return '<ProdutoTipo %r quantidade=%s' % (self.nome, self.quantidade)
+        return '<ProdutoTipo %r quantidade=%s>' % (self.nome, self.quantidade)
 
-
+class AjusteForm(FlaskForm):
+    quantidade = IntegerField('Quantidade', validators=[DataRequired()], widget=NumberInput(step=1))
+    produto = HiddenField('ProdutoTipo', validators=[DataRequired()])
+    submit = SubmitField('Ajustar')
 
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
 
-
 @app.errorhandler(500)
 def internal_server_error(e):
     return render_template('500.html'), 500
 
-
-@app.route('/vender', methods=['GET', 'POST'])
+@app.route('/ajuste', methods=['GET', 'POST'])
 def vender():
     form = AjusteForm()
     if form.validate_on_submit():
