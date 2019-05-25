@@ -8,15 +8,27 @@ from wtforms.validators import DataRequired, NumberRange
 #from wtforms.fields.html5 import IntegerField
 from wtforms.widgets.html5 import NumberInput
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
+from flask_migrate import Migrate, upgrade
 
-basedir = os.path.abspath(os.path.dirname(__file__))
+# https://devcenter.heroku.com/articles/heroku-postgresql
+# https://devcenter.heroku.com/articles/heroku-cli
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'hard to guess string'
-app.config['SQLALCHEMY_DATABASE_URI'] =\
-    'sqlite:///' + os.path.join(basedir, 'data.sqlite')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+if os.environ.get('DYNO'):
+    # Produção no heroku
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+else:
+    app.config['SECRET_KEY'] = 'hard to guess string'
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    app.config['SQLALCHEMY_DATABASE_URI'] =\
+    'sqlite:///' + os.path.join(basedir, 'data.sqlite')
+
+
+
+
 
 
 bootstrap = Bootstrap(app)
@@ -32,6 +44,13 @@ class ProdutoTipo(db.Model):
     quantidade = db.Column(db.Integer, default=0)
     def __repr__(self):
         return '<ProdutoTipo %r quantidade=%s>' % (self.nome, self.quantidade)
+
+    @staticmethod
+    def inserir_tipos():
+        db.session.add(ProdutoTipo(nome="Bodão", valor="170"))
+        db.session.add(ProdutoTipo(nome="Bodinho", valor="100"))
+        db.session.add(ProdutoTipo(nome="Cabrita", valor="80"))
+        db.session.commit()
 
 class AjusteForm(FlaskForm):
     quantidade = IntegerField('Quantidade', validators=[DataRequired()], widget=NumberInput(step=1))
@@ -57,7 +76,7 @@ def vender():
         db.session.add(p)
         db.session.commit()
         return redirect(url_for('vender'))
-        
+
     produtos = ProdutoTipo.query.all()
     forms = {}
     for p in produtos:
@@ -74,3 +93,13 @@ def index():
 @app.shell_context_processor
 def make_shell_context():
     return dict(db=db, ProdutoTipo=ProdutoTipo)
+
+
+
+@app.cli.command()
+def deploy():
+    """Run deployment tasks."""
+    # migrate database to latest revision
+    upgrade()
+    # Insere valores iniciais
+    ProdutoTipo.inserir_tipos()
