@@ -1,5 +1,13 @@
 # disk-bode
+
 Aplicação do disk-bode
+
+## Requisitos
+
+- Gerenciar o estoque de bodes
+    - Mostrar a quantidade de bodes no estoque
+    - Ajustar a quantidade
+    - Cadastrar/Atualizar novos tipos e valores
 
 
 # Instruções para execução
