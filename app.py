@@ -87,7 +87,7 @@ def vender():
 
 @app.route('/', methods=['GET'])
 def index():
-    produtos = ProdutoTipo.query.all()
+    produtos = ProdutoTipo.query.order_by(ProdutoTipo.nome).all()
     return render_template('index.html', produtos=produtos)
 
 @app.shell_context_processor
