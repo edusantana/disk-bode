@@ -43,14 +43,14 @@ db.session.commit()
 
 ProdutoTipo.query.all() 
 
-```
+# Saindo ou pressiona `CTRL+D`
+exit()
 
-Digita `exit` para sair ou pressiona `CTRL+D`
+```
 
 E executar a aplicação
 
 ```
-export FLASK_APP=app.py
 flask run -p 8080
 ```
 
