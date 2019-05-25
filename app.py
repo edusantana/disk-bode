@@ -47,14 +47,21 @@ class ProdutoTipo(db.Model):
 
     @staticmethod
     def inserir_tipos():
-        db.session.add(ProdutoTipo(nome="Bodão", valor="170"))
-        db.session.add(ProdutoTipo(nome="Bodinho", valor="100"))
-        db.session.add(ProdutoTipo(nome="Cabrita", valor="80"))
+        db.session.add(ProdutoTipo(nome="Bode 130", valor="130"))
+        db.session.add(ProdutoTipo(nome="Bode 150", valor="150"))
+        db.session.add(ProdutoTipo(nome="Cabra 140", valor="140"))
+        db.session.add(ProdutoTipo(nome="Cabra 160", valor="160"))
+        db.session.add(ProdutoTipo(nome="Carneiro 180", valor="180"))
+        db.session.add(ProdutoTipo(nome="Cabrito 110", valor="110"))
+        db.session.add(ProdutoTipo(nome="Cabrita 110", valor="110"))
+        db.session.add(ProdutoTipo(nome="Frango", valor="30"))
+        db.session.add(ProdutoTipo(nome="Galinha", valor="30"))
         db.session.commit()
 
 class AjusteForm(FlaskForm):
     quantidade = IntegerField('Quantidade', validators=[DataRequired()], widget=NumberInput(step=1))
     produto = HiddenField('ProdutoTipo', validators=[DataRequired()])
+
     submit = SubmitField('Ajustar')
 
 @app.errorhandler(404)
@@ -65,17 +72,21 @@ def page_not_found(e):
 def internal_server_error(e):
     return render_template('500.html'), 500
 
-@app.route('/ajuste', methods=['GET', 'POST'])
-def vender():
+
+@app.route('/ajuste/<operacao>', methods=['GET', 'POST'])
+def estoque(operacao):
     form = AjusteForm()
     if form.validate_on_submit():
         produto = form.produto.data
         quantidade = form.quantidade.data
         p = ProdutoTipo.query.get(int(produto))
-        p.quantidade += quantidade
+        if 'vender' == operacao:
+            p.quantidade -= quantidade
+        else:
+            p.quantidade += quantidade
         db.session.add(p)
         db.session.commit()
-        return redirect(url_for('vender'))
+        return redirect(url_for('estoque', operacao=operacao))
 
     produtos = ProdutoTipo.query.order_by(ProdutoTipo.nome).all()
     forms = {}
@@ -83,6 +94,11 @@ def vender():
         f = AjusteForm(produto=str(p.id), quantidade=0)
         forms[p] = f
     return render_template('vender.html', produtos=produtos, forms=forms)
+
+@app.route('/ajuste/', methods=['GET'])
+@app.route('/ajuste', methods=['GET'])
+def ajuste():
+    return render_template('ajuste.html')
 
 
 @app.route('/', methods=['GET'])
